@@ -1,0 +1,244 @@
+DEMO> (load "/home/hjs/workspace/franz/netica-ffi/examples/demo.cl")
+; Loading /home/hjs/workspace/franz/netica-ffi/examples/demo.cl
+;; Netica 5.04 Linux (AF), (C) 1992-2012 Norsys Software Corp.
+
+The license being used is +HuangJ//120,310-6-G/(security part removed).
+;; Netica successfully started.
+;; new net "AsiaEx": #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                       NIL #x7fbf0c00e920 @ #x100017bafa2>
+;; new node "VisitAsia": #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                           NIL #x7fbf0c00f2e0 @ #x100018100e2>
+;; new node "Tuberculosis": #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                              NIL #x7fbf0c0109c0 @ #x10001a13042>
+;; new node "Smoking": #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                         NIL #x7fbf0c011840 @ #x10001af9962>
+;; new node "Cancer": #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                        NIL #x7fbf0c011f80 @ #x10001b97962>
+;; new node "TbOrCa": #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                        NIL #x7fbf0c012ab0 @ #x100017032b2>
+;; new node "XRay": #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                      NIL #x7fbf0c013620 @ #x100019f8a82>
+ === Compiling net...
+ === Original probabilities:
+;; Tuberculosis: P("present")=0.010399999
+;; Tuberculosis: P("absent")=0.9896
+;; "XRay": set to "abnormal"
+ === Given an abnormal X-ray:
+;; Tuberculosis: P("present")=0.0924109
+;; Tuberculosis: P("absent")=0.9075891
+;; "VisitAsia": set to "visit"
+ === Given an abnormal X-ray and a visit to Asia:
+;; Tuberculosis: P("present")=0.33771563
+;; Tuberculosis: P("absent")=0.6622844
+;; "Cancer": set to "present"
+ === Given abnormal X-ray, Asia visit, and lung cancer:
+;; Tuberculosis: P("present")=0.05
+;; Tuberculosis: P("absent")=0.95
+ === *net*
+net: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c00e920 @
+       #x10001627e92>
+name: "AsiaEx"
+ * [0] node: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c00f2e0 @
+               #x100016db152> (net: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                                      NIL #x7fbf0c00e920
+                                      @
+                                      #x100016ddb72>)
+name: "VisitAsia"   ("DISCRETE_TYPE" "NATURE_NODE")
+position: (100.0d0 100.0d0)
+state count: 2
+[0] name: "visit"
+[1] name: "no_visit"
+1 child:
+[0] "Tuberculosis" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                      NIL #x7fbf0c0109c0 @ #x10001701672>)
+no parents
+ * [1] node: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c0109c0 @
+               #x1000172e032> (net: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                                      NIL #x7fbf0c00e920
+                                      @
+                                      #x10001730a52>)
+name: "Tuberculosis"   ("DISCRETE_TYPE" "NATURE_NODE")
+position: (100.0d0 200.0d0)
+state count: 2
+[0] name: "present"
+[1] name: "absent"
+1 child:
+[0] "TbOrCa" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c012ab0 @
+                #x1000174fbf2>)
+1 parent:
+[0] "VisitAsia" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c00f2e0
+                   @ #x1000175a002>)
+ * [2] node: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c011840 @
+               #x10001782092> (net: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                                      NIL #x7fbf0c00e920
+                                      @
+                                      #x10001784ab2>)
+name: "Smoking"   ("DISCRETE_TYPE" "NATURE_NODE")
+position: (700.0d0 100.0d0)
+state count: 2
+[0] name: "smoker"
+[1] name: "nonsmoker"
+1 child:
+[0] "Cancer" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c011f80 @
+                #x100017a3c52>)
+no parents
+ * [3] node: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c011f80 @
+               #x100017d0602> (net: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                                      NIL #x7fbf0c00e920
+                                      @
+                                      #x100017d3022>)
+name: "Cancer"   ("DISCRETE_TYPE" "NATURE_NODE")
+title: "Lung Cancer"
+position: (700.0d0 200.0d0)
+state count: 2
+[0] name: "present"
+[1] name: "absent"
+1 child:
+[0] "TbOrCa" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c012ab0 @
+                #x100017f2552>)
+1 parent:
+[0] "Smoking" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c011840 @
+                 #x100017fc962>)
+ * [4] node: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c012ab0 @
+               #x100018249e2> (net: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                                      NIL #x7fbf0c00e920
+                                      @
+                                      #x10001827402>)
+name: "TbOrCa"   ("DISCRETE_TYPE" "NATURE_NODE")
+title: "Tuberculosis or Cancer"
+position: (400.0d0 300.0d0)
+state count: 2
+[0] name: "true"
+[1] name: "false"
+1 child:
+[0] "XRay" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c013620 @
+              #x10001846942>)
+2 parents:
+[0] "Tuberculosis" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                      NIL #x7fbf0c0109c0 @ #x10001850d52>)
+[1] "Cancer" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c011f80 @
+                #x10001855a82>)
+ * [5] node: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c013620 @
+               #x1000187db02> (net: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                                      NIL #x7fbf0c00e920
+                                      @
+                                      #x10001880522>)
+name: "XRay"   ("DISCRETE_TYPE" "NATURE_NODE")
+position: (400.0d0 400.0d0)
+state count: 2
+[0] name: "abnormal"
+[1] name: "normal"
+no children
+1 parent:
+[0] "TbOrCa" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c012ab0 @
+                #x10001a18332>)
+;; new stream: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04ac90 @
+                 #x10001a60682>
+;; saved #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c00e920 @
+           #x1000160dbc2> to "asia.dne"
+;; new stream: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04ac90 @
+                 #x10001abeb62>
+ === *new*
+net: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04bd90 @
+       #x10001adc2c2>
+name: "AsiaEx"
+file-name: "asia.dne"
+ * [0] node: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04cd00 @
+               #x10001b254d2> (net: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                                      NIL #x7fbf0c04bd90
+                                      @
+                                      #x10001b27ef2>)
+name: "VisitAsia"   ("DISCRETE_TYPE" "NATURE_NODE")
+position: (100.0d0 100.0d0)
+state count: 2
+[0] name: "visit"
+[1] name: "no_visit"
+1 child:
+[0] "Tuberculosis" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                      NIL #x7fbf0c04d570 @ #x10001b470a2>)
+no parents
+ * [1] node: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04d570 @
+               #x10001b73a62> (net: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                                      NIL #x7fbf0c04bd90
+                                      @
+                                      #x10001b76482>)
+name: "Tuberculosis"   ("DISCRETE_TYPE" "NATURE_NODE")
+position: (100.0d0 200.0d0)
+state count: 2
+[0] name: "present"
+[1] name: "absent"
+1 child:
+[0] "TbOrCa" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04e800 @
+                #x10001b95622>)
+1 parent:
+[0] "VisitAsia" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04cd00
+                   @ #x10001b9fa32>)
+ * [2] node: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04db50 @
+               #x10001bc7ac2> (net: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                                      NIL #x7fbf0c04bd90
+                                      @
+                                      #x10001bca4e2>)
+name: "Smoking"   ("DISCRETE_TYPE" "NATURE_NODE")
+position: (700.0d0 100.0d0)
+state count: 2
+[0] name: "smoker"
+[1] name: "nonsmoker"
+1 child:
+[0] "Cancer" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04e210 @
+                #x10001be9682>)
+no parents
+ * [3] node: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04e210 @
+               #x10001c16032> (net: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                                      NIL #x7fbf0c04bd90
+                                      @
+                                      #x10001c18a52>)
+name: "Cancer"   ("DISCRETE_TYPE" "NATURE_NODE")
+title: "Lung Cancer"
+position: (700.0d0 200.0d0)
+state count: 2
+[0] name: "present"
+[1] name: "absent"
+1 child:
+[0] "TbOrCa" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04e800 @
+                #x10001c3bf82>)
+1 parent:
+[0] "Smoking" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04db50 @
+                 #x1000168d512>)
+ * [4] node: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04e800 @
+               #x100016b5822> (net: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                                      NIL #x7fbf0c04bd90
+                                      @
+                                      #x100016b8242>)
+name: "TbOrCa"   ("DISCRETE_TYPE" "NATURE_NODE")
+title: "Tuberculosis or Cancer"
+position: (400.0d0 300.0d0)
+state count: 2
+[0] name: "true"
+[1] name: "false"
+1 child:
+[0] "XRay" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04ee50 @
+              #x100016d7bf2>)
+2 parents:
+[0] "Tuberculosis" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                      NIL #x7fbf0c04d570 @ #x100016e2002>)
+[1] "Cancer" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04e210 @
+                #x100016e6d32>)
+ * [5] node: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04ee50 @
+               #x1000170edb2> (net: #<FOREIGN-FUNCTIONS:FOREIGN-POINTER
+                                      NIL #x7fbf0c04bd90
+                                      @
+                                      #x100017117d2>)
+name: "XRay"   ("DISCRETE_TYPE" "NATURE_NODE")
+position: (400.0d0 400.0d0)
+state count: 2
+[0] name: "abnormal"
+[1] name: "normal"
+no children
+1 parent:
+[0] "TbOrCa" (#<FOREIGN-FUNCTIONS:FOREIGN-POINTER NIL #x7fbf0c04e800 @
+                #x10001735072>)
+;; Shut down any remaining nets.
+;; Shut down Netica session.
+;; Leaving Netica.
+T
+

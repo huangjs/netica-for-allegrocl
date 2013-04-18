@@ -1,0 +1,196 @@
+Copyright, License, Contact
+===========================
+
+Copyright ©2013 Franz All Rights Reserved
+License: TBD
+Author: Jianshi Huang (jianshi.huang@gmail.com)
+
+
+Build Netica Shared Library on Linux
+====================================
+
+Assume you're using x86 64bit Linux. 
+Tested on Ubuntu 12.04 x8664
+
+% gcc -shared -fPIC -INetica_API_504/src -LNetica_API_504/lib \
+  Netica_API_504/src/NeticaEx.c Netica_API_504/lib/64bit/libnetica.a \
+  -lm -lrt -lpthread -lstdc++ -o lib/libnetica.so.5.0.4
+
+
+Development notes
+=================
+
+There're about 250 functions in Netica C API, and dozens of other
+definitions. I used SWIG for generating the C API wrappers for
+eliminating human mistakes and saving time. Due to SWIG's limitation,
+a modified Netica header file and a hand-written patch are needed. The
+good news is that C API support is mostly done (except Listener
+functions which need callbacks, will add later).
+
+The SWIG interface definition is pretty straightforward, I only need
+to deal with output parameters. Note that there's a bug in SWIG that
+'char** OUTPUT' will not be recognized. This is manually fixed in the
+patch.
+
+The header file needs fix as well. 'enum' without 'typedef' will not
+be recognized by SWIG; In the form 'typedef struct <name> <alias>',
+<name> will be used as lisp class name rather than <alias>. These are
+manually fixed.
+
+And I've found several bugs in CLisp's netica implementation and
+RNetica.
+
+As for Lisp-side API, it's a big task. CLisp only implements very
+basic ones. These are ported in src/netica.cl. RNetica seems to be a
+good reference, but still, it only implements 2/5 of the Netica API.
+
+
+Compile SWIG interface
+----------------------
+
+% swig -allegrocl -nocwrap -identifier-converter \
+  identifier-convert-lispify -module netica.ffi \
+  -Iinclude src/netica.i
+  
+This will generate src/netica.ffi.cl file.
+
+
+Manual modification
+-------------------
+
+- in src/netica.ffi.cl
+
+    Change (ff:allocate-fobject ':char :c)
+    to
+    (ff:allocate-fobject ':char :c *mesg-len-ns*)
+
+    NOTE: SWIG's support of string size doesn't seem working
+        
+
+Package structure
+-----------------
+
+- Package netica.ffi
+
+    is the low-level wrapper for Netica's C API
+
+- Package netica 
+
+    is for Netica's Lisp interface, and the demonstration of using the
+    low-level C API
+
+- Package netica.demo 
+  
+    is for demonstration Lisp interface usage
+
+
+User Guide
+==========
+
+C API support is almost done, getting familiar with C API usage is
+important. Currently only several Lisp interfaces are implemented.
+
+Use netica.cl as a reference for implementing your own Lisp interface.
+
+It's likely you'll use both Lisp interface and C API.
+
+You cannot have multiple netica instances, but you can call Netica API
+from multiple threads.
+
+All errors are checked and properly reported. Severe errors are
+signaled (error), less severe ones are warned, messages are printed
+out if *verbose* is true.
+
+
+Basic usage
+-----------
+
+(load "defsystem.cl")
+(load-system :netica :compile t)
+...
+
+(use-package :netica)
+(setf *license* "<your license>")
+(start-netica)
+...
+...
+...
+(close-netica)
+
+
+Naming convention
+-----------------
+
+Currently Lisp convention is enforced. For example,
+
+(in C) GetNodeNamed_bn ==> (in Lisp) get-node-named-bn
+
+
+Calling convention
+------------------
+
+C functions may return multiple values by output parameters (pointer
+arguments). Here are the conversion rules for output parameters.
+
+- for scalar values (int*, double*, state_bn*, etc.) and strings
+  (char*), we will convert them to lisp values and return multiple
+  values. The output parameter will be removed from the function
+  signature.
+  
+- for other values like arrays (state_bn*, double*, etc.) and structs
+  (net*, node*, etc.), we will not return them as multiple values and
+  you need to pass them to the function. When function returns, values
+  passed in will get updated (so you need to hold them in variables).
+
+
+Notes for using Netica's C API in Lisp
+--------------------------------------
+
+Use *null* for NULL.
+Use (truep ...), (nullp ...) for testing.
+
+
+Condition
+---------
+
+- netica-condition
+- netica-error
+
+
+Documentation
+-------------
+
+Please check the docstring of functions, or source file netica.cl.
+
+
+TODO
+====
+
+- More Lispy interface
+
+    Current Lisp wrapper is minimal (ported from CLisp).
+    RNetica is a good reference.
+
+- Return proper typed foreign pointers
+
+    For struct object, SWIG generates proper CLOS definitions
+    (subclass of foreign-pointer), but they're not used in function
+    return types.
+    
+    So all non-primitive value returned is a foreign-pointer and the
+    type information is lost.
+    
+    Need to fix SWIG.
+    
+- Add NeticaEx.h support or implement Lisp equivalent
+
+    Need to deal with varargs.
+    So porting to Lisp seems a better choice.
+    
+- Lisp callback support
+
+    Used only by Netica's listener API.
+    This will mark the full implementation of C API :)
+
+- More tests and examples
+
