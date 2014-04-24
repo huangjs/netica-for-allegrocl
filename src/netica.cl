@@ -24,6 +24,7 @@
            #:node-info
            #:get-beliefs
            #:enter-finding
+           #:enter-likelihood-finding
            #:open-dne-file
            #:with-open-dne-file
            #:save-net
@@ -240,7 +241,7 @@ Checking is a string, maxmem is a number.
 Special variable *env* will be set on success."
   ;; make sure *env* is not initialized
   (when *env*
-    (warn "Netica already running, use stop-netica to terminal current Netica session.")
+    (warn "Netica already running, use stop-netica to terminate current Netica session.")
     (return-from start-netica))
   (let ((env (netica.ffi:new-netica-environ-ns *license* *null* *null*)))
     (when (nullp env)
@@ -271,7 +272,8 @@ Special variable *env* will be set on success."
 *env* will be set to NIL."
   ;; check env
   (unless env
-    (warn "Netica not running, nothing to do."))
+    (warn "Netica not running, nothing to do.")
+    (return-from close-netica))
   ;; report errors if exists
   (check-errors :signalp nil :env *env*)
   ;;
@@ -392,6 +394,14 @@ X & Y are coordinates; both or neither must be supplied."
                   :format-arguments (list x y))))
     (check-errors)
     node))
+
+;;; The call (in netica.ffi.cl) to "EnterNodeLikelihood_bn" passes in the likelihood-vector without any of the conversion that we see for vectors in the function above.
+;;; That call doesn't work properly, as all likelihood findings (regardless of PARM1_likelihood contents) act as if an ordinary finding had been made for the first state (at least, given two states).
+;;; The function below, modeled on the code above, seems to work.
+(defun enter-likelihood-finding (node likelihood-vector)
+  (let* ( ; (node (netica.ffi:get-node-named-bn node net)) ; We'll pass in a foreign node pointer (not look it up in a network from node name).
+	 (foreign-likelihood-vector (convert-to-foreign-array likelihood-vector 'netica.ffi:ff-prob-bn (length likelihood-vector))))
+    (netica.ffi:enter-node-likelihood-bn node foreign-likelihood-vector)))
 
 (defun node-info (node &key header (out *standard-output*))
   "Print information about the node."
